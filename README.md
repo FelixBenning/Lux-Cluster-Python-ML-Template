@@ -116,17 +116,51 @@ For this it makes sense to create a launch script and launch it with
 
 ## Setting up the Python packages (in particular Pytorch)
 
+It is good practice to reccord the dependencies in an environment file. See `environment.yml` in this template.
 
+The remaining setup should be done on a compute node. It may need to be a GPU node to compile pytorch for GPU usage I am not sure.
+Reserve an interactive one using SLURM.
 
 
 ```shell
 micromamba env create -f environment.yml
-micromamba activate [project-name]
+micromamba activate project-name
 ```
+
+Whenever you reconnect to the server you first need to reactivate the project to make all the installed packages available. Different projects can have different installed packages.
 
 After changes to `environment.yml` run
 ```shell
 micromamba env update -f environment.yml
 ```
+
+Check if `pytorch` has acces to the GPU by running diagnostic script
+```shell
+python ensure_gpu.py
+```
+Ideally you would get `torch cuda available: True` and you can ignore the other diagnostic information. Otherwise ensure this works before proceeding.
+
+## Debugging using VSCode
+
+0. Install the `python` extension in VSCode
+1. Enter an interactive compute node
+2. find its name, (use the command `hostname`), should be something like `iris-***`
+3. set a breakpoint in `your_python_file.py`.
+4. In the interactive compute node, source the
+script `debug.sh`, that is type
+
+    ```shell
+    $ . debug.sh your_python_file.py
+    ```
+
+5. In VScode click the start symbol in the 'run and debug' panel.
+    > The `launch.json` file in this template is configured to
+    attach to the process started by the `debug.sh` file.
+
+
+> **Why is this so complicated?** The issue is that the VSCode server is on the login node, while the debugging should happen on the compute node. If VScode starts the debugging process itself, it starts it on the login node and typically fails because the python environment is not set up there. The `debug.sh` starts
+the process on the compute node and tells it to wait for vscode
+to attach.
+
 
 
