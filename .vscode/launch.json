@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Attach to active shell job",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "${input:computeNodeHost}",
+                "port": 5678
+            },
+            "justMyCode": true
+        },
+    ],
+    "inputs": [
+        {
+            "id": "computeNodeHost",
+            "type": "promptString",
+            "description": "Compute node hostname running debugpy",
+            "default": "iris-"
+        }
+    ]
+}
